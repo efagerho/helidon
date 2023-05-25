@@ -88,8 +88,17 @@ readonly PREPARE_HOOKS=( )
 # Hooks for deployment work
 readonly PERFORM_HOOKS=( )
 
+echo "====="
+git --version
+gpg --version
+java --version
+mvn --version
+echo "====="
+
 # Resolve FULL_VERSION
 if [ -z "${VERSION+x}" ]; then
+
+  echo "MAVEN_ARGS=${MAVEN_ARGS}"
 
     # get maven version
     MVN_VERSION=$(mvn ${MAVEN_ARGS} \
