@@ -77,7 +77,9 @@ if [ -z "${__PIPELINE_ENV_INCLUDED__}" ]; then
         MAVEN_OPTS="${MAVEN_OPTS} --add-opens=java.desktop/com.sun.imageio.plugins.png=ALL-UNNAMED"
         export MAVEN_OPTS
         MAVEN_ARGS="${MAVEN_ARGS} -B"
-        if [ -n "${MAVEN_SETTINGS_FILE}" ] ; then
+        if [ -n "${MAVEN_SETTINGS}" ] ; then
+            export MAVEN_SETTINGS_FILE="${HOME}/.m2/settings.xml"
+            echo ${MAVEN_SETTINGS} > ${MAVEN_SETTINGS_FILE}
             MAVEN_ARGS="${MAVEN_ARGS} -s ${MAVEN_SETTINGS_FILE}"
             echo "MAVEN_SETTINGS_FILE added to MAVEN_ARGS"
         fi

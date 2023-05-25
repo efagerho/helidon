@@ -41,7 +41,7 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.HELIDON_GPG_PASSPHRASE }}
           GPG_PRIVATE_KEY: ${{ secrets.HELIDON_GPG_PRIVATE_KEY }}
           GPG_PUBLIC_KEY: ${{ secrets.HELIDON_GPG_PUBLIC_KEY }}
-          MAVEN_SETTINGS_FILE: ${{ secrets.MAVEN_SETTINGS }}
+          MAVEN_SETTINGS: ${{ secrets.MAVEN_SETTINGS }}
           WORKFLOW: "true"
         run: |
           git config user.email "helidon-robot_ww@oracle.com"
