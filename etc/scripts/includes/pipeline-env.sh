@@ -65,6 +65,40 @@ if [ -z "${__PIPELINE_ENV_INCLUDED__}" ]; then
         PATH="${PATH}:${JAVA_HOME}/bin"
     }
 
+    if [ -n "${WORKFLOW}" ] ; then
+        echo "In WORKFLOW"
+        export PIPELINE="true"
+        MAVEN_OPTS="${MAVEN_OPTS} -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+        MAVEN_OPTS="${MAVEN_OPTS} -Dorg.slf4j.simpleLogger.showDateTime=true"
+        MAVEN_OPTS="${MAVEN_OPTS} -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS"
+        # Needed for archetype engine plugin
+        MAVEN_OPTS="${MAVEN_OPTS} --add-opens=java.base/java.util=ALL-UNNAMED"
+        # Needed for generating site
+        MAVEN_OPTS="${MAVEN_OPTS} --add-opens=java.desktop/com.sun.imageio.plugins.png=ALL-UNNAMED"
+        export MAVEN_OPTS
+        MAVEN_ARGS="${MAVEN_ARGS} -B"
+        if [ -n "${MAVEN_SETTINGS_FILE}" ] ; then
+            MAVEN_ARGS="${MAVEN_ARGS} -s ${MAVEN_SETTINGS_FILE}"
+            echo "MAVEN_SETTINGS_FILE added to MAVEN_ARGS"
+        fi
+        export MAVEN_ARGS
+        if [ -n "${GPG_PUBLIC_KEY}" ] ; then
+            echo "GPG PUB"
+            gpg --import --no-tty --batch ${GPG_PUBLIC_KEY}
+        fi
+        if [ -n "${GPG_PRIVATE_KEY}" ] ; then
+            echo "GPG PRI"
+            gpg --allow-secret-key-import --import --no-tty --batch ${GPG_PRIVATE_KEY}
+        fi
+        if [ -n "${GPG_PASSPHRASE}" ] ; then
+            echo "GPG PAS"
+            echo "allow-preset-passphrase" >> ~/.gnupg/gpg-agent.conf
+            gpg-connect-agent reloadagent /bye
+            GPG_KEYGRIP=$(gpg --with-keygrip -K | grep "Keygrip" | head -1 | awk '{print $3}')
+            /usr/lib/gnupg/gpg-preset-passphrase --preset "${GPG_KEYGRIP}" <<< "${GPG_PASSPHRASE}"
+        fi
+    fi
+
     if [ -n "${JENKINS_HOME}" ] ; then
         export PIPELINE="true"
         export JAVA_HOME="/tools/jdk17"

@@ -6,8 +6,7 @@ name: "Release"
 on:
   push:
     branches:
-      - 'release-*'
-
+      - 'test-release-*'
 env:
   JAVA_VERSION: '17'
   JAVA_DISTRO: 'temurin'
@@ -19,10 +18,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  call-validate-workflow:
-    uses: ./.github/workflows/validate.yml
+#  call-validate-workflow:
+#    uses: ./.github/workflows/validate.yml
   release:
-    needs: call-validate-workflow
+#    needs: call-validate-workflow
     timeout-minutes: 60
     runs-on: ubuntu-20.04
     environment: release
@@ -43,6 +42,7 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.HELIDON_GPG_PRIVATE_KEY }}
           GPG_PUBLIC_KEY: ${{ secrets.HELIDON_GPG_PUBLIC_KEY }}
           MAVEN_SETTINGS_FILE: ${{ secrets.MAVEN_SETTINGS }}
+          WORKFLOW: "true"
         run: |
           git config user.email "helidon-robot_ww@oracle.com"
           git config user.name "Helidon Robot"
