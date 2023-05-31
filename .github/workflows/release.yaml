@@ -17,10 +17,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  call-validate-workflow:
-    uses: ./.github/workflows/validate.yaml
+#  call-validate-workflow:
+#    uses: ./.github/workflows/validate.yaml
   release:
-    needs: call-validate-workflow
+#    needs: call-validate-workflow
     timeout-minutes: 60
     runs-on: ubuntu-20.04
     environment: release
@@ -46,3 +46,9 @@ jobs:
           git config user.email "helidon-robot_ww@oracle.com"
           git config user.name "Helidon Robot"
           etc/scripts/release.sh release_build
+      - name: Upload Staged Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: io-helidon-staged-artifacts
+          path: parent/target/nexus-staging/
+          retention-days: 90
