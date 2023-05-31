@@ -17,10 +17,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-#  call-validate-workflow:
-#    uses: ./.github/workflows/validate.yaml
+  copyright:
+    timeout-minutes: 10
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v3.6.0
+        with:
+          distribution: ${{ env.JAVA_DISTRO }}
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+      - name: Copyright
+        run: etc/scripts/copyright.sh
   release:
-#    needs: call-validate-workflow
     timeout-minutes: 60
     runs-on: ubuntu-20.04
     environment: release
