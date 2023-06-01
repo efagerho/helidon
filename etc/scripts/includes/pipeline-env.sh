@@ -90,15 +90,12 @@ if [ -z "${__PIPELINE_ENV_INCLUDED__}" ]; then
             rm "$tmpfile"
         fi
         if [ -n "${GPG_PRIVATE_KEY}" ] ; then
-            echo "GPG PRI"
             tmpfile=$(mktemp /tmp/pri.XXXXXX.key)
             echo "${GPG_PRIVATE_KEY}" > "${tmpfile}"
-            # echo ${GPG_PRIVATE_KEY} | base64 -d > "${tmpfile}"
             gpg --allow-secret-key-import --import --no-tty --batch "${tmpfile}"
             rm "$tmpfile"
         fi
         if [ -n "${GPG_PASSPHRASE}" ] ; then
-            echo "GPG PAS"
             echo "allow-preset-passphrase" >> ~/.gnupg/gpg-agent.conf
             gpg-connect-agent reloadagent /bye
             GPG_KEYGRIP=$(gpg --with-keygrip -K | grep "Keygrip" | head -1 | awk '{print $3}')
